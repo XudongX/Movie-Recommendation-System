@@ -24,16 +24,17 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url_for('main.index') }}">主页</a></li>
-                    <li><a href="{{ url_for('post.index') }}">Post</a></li>
                     <li><a href="{{ url_for('movie.index') }}">Movie</a></li>
+                    <li><a href="{{ url_for('post.index') }}">Post</a></li>
+
                     {% if current_user.is_authenticated %}
-                        <li><a href="{{ url_for('main.user', username=current_user.username) }}">个人资料</a></li>
+                        <li><a href="{{ url_for('user.username', username=current_user.username) }}">个人资料</a></li>
                     {% endif %}
 
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if current_user.can(Permission.MODERATE) %}
-                        <li><a href="{{ url_for('main.moderate') }}">管理评论</a></li>
+                        <li><a href="{{ url_for('post.moderate') }}">管理评论</a></li>
                     {% endif %}
                     {% if current_user.is_authenticated %}
                         <li class="dropdown">

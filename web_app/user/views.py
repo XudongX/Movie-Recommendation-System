@@ -21,7 +21,7 @@ def after_request(response):
 
 
 @user.route('/<username>')
-def user_page(username):
+def username(username):
     user = User.query.filter_by(username=username).first_or_404()
     page = request.args.get('page', 1, type=int)
     pagination = user.posts.order_by(Post.timestamp.desc()).paginate(
