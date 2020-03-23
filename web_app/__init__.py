@@ -33,10 +33,17 @@ def create_app(config_name):
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
 
+    from .user import user as user_blueprint
+    app.register_blueprint(user_blueprint, url_prefix='/user')
+
+    from .post import post as post_blueprint
+    app.register_blueprint(post_blueprint, url_prefix='/post')
+
     from .auth import auth as auth_blueprint
     app.register_blueprint(auth_blueprint, url_prefix='/auth')
 
     from .movie import movie as movie_blueprint
     app.register_blueprint(movie_blueprint, url_prefix='/movie')
+
 
     return app
