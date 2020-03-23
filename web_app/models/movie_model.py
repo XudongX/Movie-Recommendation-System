@@ -58,7 +58,7 @@ movies_countries = db.Table(
 class MoviePoster(db.Model):
     __tablename__ = 'movie_posters'
     movie_id = db.Column(db.Integer, db.ForeignKey('movies.id'), primary_key=True)
-    poster = db.Column(db.Binary)
+    poster_pic = db.Column(db.Binary)
 
 
 class Movie(db.Model):
@@ -86,3 +86,5 @@ class Movie(db.Model):
     title = db.Column(db.String(255))
     vote_average = db.Column(db.Float)
     vote_count = db.Column(db.BigInteger)
+    poster_link = db.Column(db.String(255))
+    imdb_id = db.Column(db.String(255))

@@ -24,7 +24,7 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a href="{{ url_for('main.index') }}">主页</a></li>
-                    <li><a href="{{ url_for('movie.index') }}">Movie</a></li>
+                <li><a href="{{ url_for('movie.index') }}">Movie</a></li>
                     <li><a href="{{ url_for('post.index') }}">Post</a></li>
 
                     {% if current_user.is_authenticated %}

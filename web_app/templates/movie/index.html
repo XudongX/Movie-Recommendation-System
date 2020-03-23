@@ -1,15 +1,69 @@
 {% extends "base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
 {% import "_macros.html" as macros %}
 
 {% block title %}Movie List{% endblock %}
 
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='movie.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js"></script>
+{% endblock %}
+
 {% block page_content %}
+    <ul class="nav nav-tabs">
+        <li{% if not show_followed %} class="active"{% endif %}><a href="">All</a></li>
+        <li{% if show_followed %} class="active"{% endif %}><a href="">Tab 2</a></li>
+    </ul>
+    <div class="movie-list" id='movieapp'>
+        <div class="movie-item" v-for="item in movieitems">
+            <img class="movie-poster"
+                 :src="item.poster_link"
+                 alt="movie poster">
+            <div class="caption">
+                <h3> {[ item.title ]} </h3>
+                <p> {[ item.tagline ]} </p>
+                <p>
+                    <a href="#" class="btn btn-primary" role="button">Like</a>
+                    <a href="#" class="btn btn-default" role="button">Detail</a>
+                </p>
+            </div>
+        </div>
+    </div>
+    </div>
 
-
+    <script>
+        var movieapp = new Vue({
+            el: '#movieapp',
+            delimiters: ['{[', ']}'],
+            data: {
+                movieitems: [
+                    {title: '学习 Vue'}
+                ]
+            },
+            created() { // 当 vm 实例 的 data 和 methods 初始化完毕后，vm实例会自动执行created 这个生命周期函数
+                this.getMovieList()
+            },
+            methods: {
+                getMovieList() {
+                    this.$http.get('api/pop_movie_list').then(result => {
+                        // 注意： 通过 $http 获取到的数据，都在 result.body 中放着
+                        var result = result.body
+                        if (result.status === 'success') {
+                            this.movieitems = result.movieitems
+                        } else {
+                            alert('获取数据失败！')
+                        }
+                    })
+                },
+                like(){},
+                detail(){}
+            }
+        })
+    </script>
 
 {% endblock %}
 
 {% block scripts %}
-{{ super() }}
+    {{ super() }}
 {% endblock %}
