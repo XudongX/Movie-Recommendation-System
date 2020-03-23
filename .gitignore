@@ -2,6 +2,9 @@
 .idea/
 .directory
 .DS_Store
+init_env.sh
+data-dev.sqlite
+.migrations
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
