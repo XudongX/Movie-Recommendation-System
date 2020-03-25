@@ -1,8 +1,16 @@
-.nav-pills a{
+.nav-pills a {
     cursor: pointer;
 }
+
 .movie-list {
 
+}
+
+.movie-detail-poster {
+    border-radius: 20px;
+    /*margin: 10px 10px;*/
+    box-shadow: 2px 2px 2px #b9bbbe;
+    border: solid darkgrey 1px;
 }
 
 .movie-item {

@@ -11,11 +11,13 @@
 {% endblock %}
 
 {% block page_content %}
-    <ul class="nav nav-pills" id="genresapp">
+    <ul class="nav nav-pills" id="genresApp">
         <li v-bind:class="{ active:cur_id==-1 }"><a id="genre-1" @click="changeGenre($event)">ALL</a></li>
-        <li v-for="item in genres" v-bind:class="{ active:item.id==cur_id }"><a :id="'genre'+item.id" @click="changeGenre($event)">{[ item.name ]}</a></li>
+        <li v-for="item in genres" v-bind:class="{ active:item.id==cur_id }"><a :id="'genre'+item.id"
+                                                                                @click="changeGenre($event)">{[
+            item.name ]}</a></li>
     </ul>
-    <div class="movie-list" id='movieapp'>
+    <div class="movie-list" id='movieApp'>
         <div class="movie-item" v-for="item in movieItems">
             <img class="movie-poster"
                  :src="item.poster_link"
@@ -25,15 +27,15 @@
                 <p> {[ item.tagline ]} </p>
                 <p>
                     <a class="btn btn-primary" role="button">Like</a>
-                    <a :href="'detail/' + item.movie_id" class="btn btn-default" role="button">Detail</a>
+                    <a :href="'/movie/detail/' + item.movie_id" class="btn btn-default" role="button">Detail</a>
                 </p>
             </div>
         </div>
     </div>
 
     <script>
-        var genresapp = new Vue({
-            el: '#genresapp',
+        var genresApp = new Vue({
+            el: '#genresApp',
             delimiters: ['{[', ']}'],
             data: {
                 genres: [],
@@ -44,7 +46,7 @@
             },
             methods: {
                 getGenresList() {
-                    this.$http.get('api/genres').then(result => {
+                    this.$http.get('/movie/api/genres').then(result => {
                         // 注意： 通过 $http 获取到的数据，都在 result.body 中放着
                         var r_body = result.body;
                         if (r_body.status === 'success') {
@@ -55,20 +57,20 @@
                     })
                 },
                 changeGenre(e) {
-                    if(e.target.id === "genre-1"){
-                        this.cur_id=-1
-                        movieapp.getMovieList();
+                    if (e.target.id === "genre-1") {
+                        this.cur_id = -1
+                        movieApp.getMovieList();
                         return;
                     }
                     var genre_id = e.target.id.slice(5);
                     this.cur_id = parseInt(genre_id)
-                    movieapp.getMovieList(genre_id);
+                    movieApp.getMovieList(genre_id);
 
                 }
             }
         })
-        var movieapp = new Vue({
-            el: '#movieapp',
+        var movieApp = new Vue({
+            el: '#movieApp',
             delimiters: ['{[', ']}'],
             data: {
                 movieItems: []
@@ -79,7 +81,7 @@
             methods: {
                 getMovieList(genre_id) {
                     if (genre_id === undefined) {
-                       this.$http.get('api/movie_list').then(result => {
+                        this.$http.get('/movie/api/movie_list').then(result => {
                             // 注意： 通过 $http 获取到的数据，都在 result.body 中放着
                             var r_body = result.body;
                             if (r_body.status === 'success') {
@@ -89,7 +91,7 @@
                             }
                         })
                     } else {
-                        this.$http.get('api/movie_list/'+genre_id).then(result => {
+                        this.$http.get('/movie/api/movie_list', {params: {genre_id: genre_id}}).then(result => {
                             // 注意： 通过 $http 获取到的数据，都在 result.body 中放着
                             var r_body = result.body;
                             if (r_body.status === 'success') {

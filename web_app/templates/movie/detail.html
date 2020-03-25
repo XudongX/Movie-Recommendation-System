@@ -4,26 +4,90 @@
 {% block title %}{{ movie_info.title }}{% endblock %}
 
 {% block page_content %}
-<div class="movie-display">
-    <img class="movie-poster col-lg-4" src="{{ movie_info['poster_link'] }}">
-    <div class="movie-detail col-lg-6">
-        <h1>{{ movie_info['title'] }}</h1>
-{#        <p>{{ user.comments.count() }} 评论</p>#}
-        <h3>{{ movie_info['tagline'] }}</h3>
-        <p>评分：{{ movie_info['vote_average'] }}</p>
-        <p>评分人数：{{ movie_info['vote_count'] }}</p>
-        <p>流派：{{ " / ".join(movie_info['genres']) }}</p>
-        <p>简介：{{ movie_info['overview'] }}</p>
-        <p>关键词：{{ " / ".join(movie_info['keywords']) }}</p>
-        <p>上映日期：{{ movie_info['release_date'] }}</p>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='movie.css') }}">
+    <div class="movie-display container">
+        <div class="col-lg-4 col-lg-offset-1">
+            <img class="movie-detail-poster" src="{{ movie_info['poster_link'] }}">
+        </div>
 
+        <div class="movie-detail col-lg-6" id="movieDetailApp">
+            <h1 class="page-header">{{ movie_info['title'] }}</h1>
+            {#        <p>{{ user.comments.count() }} 评论</p>#}
+            <h3>{{ movie_info['tagline'] }}</h3>
+            <p>评分：{{ movie_info['vote_average'] }}</p>
+            <p>评分人数：{{ movie_info['vote_count'] }}</p>
+            <p>流派：{{ " / ".join(movie_info['genres']) }}</p>
+            <p>上映日期：{{ movie_info['release_date'] }}</p>
+            <p>简介：{{ movie_info['overview'] }}</p>
+            <p>关键词：{{ " / ".join(movie_info['keywords']) }}</p>
+            {% if current_user.is_authenticated %}
+                <div class="col-lg-4">
+                    <input type="range" v-model="rated" id="movie_rating">
+                </div>
+                <button onclick=""> 我的评分: {[rated/10]}</button>
+            {% endif %}
+
+        </div>
     </div>
-</div>
-{#<h3>Posts by {{ user.username }}</h3>#}
-{#{% include '_posts.html' %}#}
-{#{% if pagination %}#}
-{#<div class="pagination">#}
-{#    {{ macros.pagination_widget(pagination, '.user', username=user.username) }}#}
-{#</div>#}
-{#{% endif %}#}
+
+    <div class="container">
+        <h2 class="page-header">Related Movies</h2>
+        <div class="movie-list" id='movieApp'>
+            <div class="movie-item" v-for="item in movieItems">
+                <img class="movie-poster"
+                     :src="item.poster_link"
+                     alt="movie poster">
+                <div class="caption">
+                    <h3> {[ item.title ]} </h3>
+                    <p> {[ item.tagline ]} </p>
+                    <p>
+                        <a class="btn btn-primary" role="button">Like</a>
+                        <a :href="'/movie/detail/' + item.movie_id" class="btn btn-default" role="button">Detail</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var movieDetailApp = new Vue({
+            el: '#movieDetailApp',
+            delimiters: ['{[', ']}'],
+            data: {
+                rated: 0
+            }
+        });
+        var movieApp = new Vue({
+            el: '#movieApp',
+            delimiters: ['{[', ']}'],
+            data: {
+                movieItems: []
+            },
+            created() { // 当 vm 实例 的 data 和 methods 初始化完毕后，vm实例会自动执行created 这个生命周期函数
+                this.getMovieList()
+            },
+            methods: {
+                getMovieList() {
+                    this.$http.get('/movie/api/related_recommend', {
+                        params: {movie_id:{{movie_info['movie_id']}}}
+                    }).then(result => {
+                        // 注意： 通过 $http 获取到的数据，都在 result.body 中放着
+                        var r_body = result.body;
+                        if (r_body.status === 'success') {
+                            this.movieItems = r_body.data.movieItems
+                        } else {
+                            alert('获取数据失败！')
+                        }
+                    })
+                }
+            },
+            like() {
+            },
+            post_rated() {
+
+            }
+        })
+    </script>
+
 {% endblock %}

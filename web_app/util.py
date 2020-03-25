@@ -7,8 +7,8 @@ def db_model_serialize(model):
 
 
 def api_error(error_message):
-    return jsonify({'message': error_message, 'status': 'error'})
+    return jsonify({'message': error_message, 'totalResults': 0, 'status': 'error'})
 
 
 def api_success(data):
-    return jsonify({'data': data, 'status': 'success'})
+    return jsonify({'data': data, 'totalResults': len(data), 'status': 'success'})
