@@ -12,7 +12,8 @@
 
 {% block page_content %}
     <ul class="nav nav-pills" id="genresapp">
-        <li v-for="item in genres"><a :id="'genre'+item.id" v-on:click="changeGenre($event)">{[ item.name ]}</a></li>
+        <li v-bind:class="{ active:cur_id==-1 }"><a id="genre-1" @click="changeGenre($event)">ALL</a></li>
+        <li v-for="item in genres" v-bind:class="{ active:item.id==cur_id }"><a :id="'genre'+item.id" @click="changeGenre($event)">{[ item.name ]}</a></li>
     </ul>
     <div class="movie-list" id='movieapp'>
         <div class="movie-item" v-for="item in movieItems">
@@ -35,7 +36,8 @@
             el: '#genresapp',
             delimiters: ['{[', ']}'],
             data: {
-                genres: []
+                genres: [],
+                cur_id: -1
             },
             created() {
                 this.getGenresList()
@@ -53,8 +55,15 @@
                     })
                 },
                 changeGenre(e) {
+                    if(e.target.id === "genre-1"){
+                        this.cur_id=-1
+                        movieapp.getMovieList();
+                        return;
+                    }
                     var genre_id = e.target.id.slice(5);
+                    this.cur_id = parseInt(genre_id)
                     movieapp.getMovieList(genre_id);
+
                 }
             }
         })

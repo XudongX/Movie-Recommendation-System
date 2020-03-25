@@ -1,5 +1,6 @@
-
-
+.nav-pills a{
+    cursor: pointer;
+}
 .movie-list {
 
 }
