@@ -12,7 +12,7 @@
 
 {% block page_content %}
     <ul class="nav nav-pills" id="genresapp">
-        <li v-for="item in genres"><a :id="'genre'+item.id" href="" v-on:click="changeGenre">{[ item.name ]}</a></li>
+        <li v-for="item in genres"><a :id="'genre'+item.id" v-on:click="changeGenre($event)">{[ item.name ]}</a></li>
     </ul>
     <div class="movie-list" id='movieapp'>
         <div class="movie-item" v-for="item in movieItems">
@@ -52,8 +52,9 @@
                         }
                     })
                 },
-                changeGenre() {
-                    alert("asdffd")
+                changeGenre(e) {
+                    var genre_id = e.target.id.slice(5);
+                    movieapp.getMovieList(genre_id);
                 }
             }
         })

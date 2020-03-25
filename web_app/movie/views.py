@@ -24,8 +24,8 @@ def movie_list_by_genre(genre_id):
     q = Genre.query.filter_by(id=genre_id)
     if q.count() == 0:
         return api_error('genre_id error')
-    q = q.firs()
-    movie_by_genre = q.movies.all()
+    q = q.first()
+    movie_by_genre = q.movies[:30]
     movie_items = [{'movie_id': i.id, 'title': i.title,
                     'tagline': i.tagline, 'poster_link': i.poster_link}
                    for i in movie_by_genre]
