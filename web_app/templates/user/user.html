@@ -50,7 +50,7 @@
 {% include '_posts.html' %}
 {% if pagination %}
 <div class="pagination">
-    {{ macros.pagination_widget(pagination, '.user', username=user.username) }}
+    {{ macros.pagination_widget(pagination, '.username_router', username=user.username) }}
 </div>
 {% endif %}
 {% endblock %}

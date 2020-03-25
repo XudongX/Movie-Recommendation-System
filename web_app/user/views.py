@@ -21,7 +21,7 @@ def after_request(response):
 
 
 @user.route('/<username>')
-def username(username):
+def username_router(username):
     user = User.query.filter_by(username=username).first_or_404()
     page = request.args.get('page', 1, type=int)
     pagination = user.posts.order_by(Post.timestamp.desc()).paginate(
@@ -43,7 +43,7 @@ def edit_profile():
         db.session.add(current_user._get_current_object())
         db.session.commit()
         flash('您的个人资料已经成功更新')
-        return redirect(url_for('.user', username=current_user.username))
+        return redirect(url_for('.username_router', username=current_user.username))
     form.name.data = current_user.name
     form.location.data = current_user.location
     form.about_me.data = current_user.about_me
@@ -67,7 +67,7 @@ def edit_profile_admin(id):
         db.session.add(user)
         db.session.commit()
         flash('个人资料已经成功更新')
-        return redirect(url_for('.user', username=user.username))
+        return redirect(url_for('.username_router', username=user.username))
     form.email.data = user.email
     form.username.data = user.username
     form.confirmed.data = user.confirmed
@@ -85,14 +85,14 @@ def follow(username):
     user = User.query.filter_by(username=username).first()
     if user is None:
         flash('无效的用户')
-        return redirect(url_for('.index'))
+        return redirect(url_for('post.index'))
     if current_user.is_following(user):
         flash('您已经关注此用户')
-        return redirect(url_for('.user', username=username))
+        return redirect(url_for('.username_router', username=username))
     current_user.follow(user)
     db.session.commit()
     flash('您现在已经关注 %s.' % username)
-    return redirect(url_for('.user', username=username))
+    return redirect(url_for('.username_router', username=username))
 
 
 @user.route('/unfollow/<username>')
@@ -102,14 +102,14 @@ def unfollow(username):
     user = User.query.filter_by(username=username).first()
     if user is None:
         flash('无效的用户')
-        return redirect(url_for('.index'))
+        return redirect(url_for('post.index'))
     if not current_user.is_following(user):
         flash('您已经成功取消关注')
-        return redirect(url_for('.user', username=username))
+        return redirect(url_for('.username_router', username=username))
     current_user.unfollow(user)
     db.session.commit()
     flash('您现在不再关注 %s' % username)
-    return redirect(url_for('.user', username=username))
+    return redirect(url_for('.username_router', username=username))
 
 
 @user.route('/followers/<username>')
@@ -117,7 +117,7 @@ def followers(username):
     user = User.query.filter_by(username=username).first()
     if user is None:
         flash('无效的用户')
-        return redirect(url_for('.index'))
+        return redirect(url_for('post.index'))
     page = request.args.get('page', 1, type=int)
     pagination = user.followers.paginate(
         page, per_page=current_app.config['FOLLOWERS_PER_PAGE'],
@@ -134,7 +134,7 @@ def followed_by(username):
     user = User.query.filter_by(username=username).first()
     if user is None:
         flash('无效的用户')
-        return redirect(url_for('.index'))
+        return redirect(url_for('post.index'))
     page = request.args.get('page', 1, type=int)
     pagination = user.followed.paginate(
         page, per_page=current_app.config['FOLLOWERS_PER_PAGE'],
@@ -144,4 +144,3 @@ def followed_by(username):
     return render_template('user/followers.html', user=user, title="Followed by",
                            endpoint='.followed_by', pagination=pagination,
                            follows=follows)
-

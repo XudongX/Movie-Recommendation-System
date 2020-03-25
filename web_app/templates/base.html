@@ -28,7 +28,7 @@
                     <li><a href="{{ url_for('post.index') }}">Post</a></li>
 
                     {% if current_user.is_authenticated %}
-                        <li><a href="{{ url_for('user.username', username=current_user.username) }}">个人资料</a></li>
+                        <li><a href="{{ url_for('user.username_router', username=current_user.username) }}">个人资料</a></li>
                     {% endif %}
 
                 </ul>

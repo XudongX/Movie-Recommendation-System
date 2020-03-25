@@ -58,7 +58,7 @@ def post_id(id):
         db.session.add(comment)
         db.session.commit()
         flash('您的评论已经发布')
-        return redirect(url_for('.post', id=post.id, page=-1))
+        return redirect(url_for('.post_id', id=post.id, page=-1))
     page = request.args.get('page', 1, type=int)
     if page == -1:
         page = (post.comments.count() - 1) // \
@@ -84,7 +84,7 @@ def edit(id):
         db.session.add(post)
         db.session.commit()
         flash('Post已经成功更新')
-        return redirect(url_for('.post', id=post.id))
+        return redirect(url_for('.post_id', id=post.id))
     form.body.data = post.body
     return render_template('post/edit_post.html', form=form)
 
@@ -126,7 +126,7 @@ def moderate_enable(id):
     comment.disabled = False
     db.session.add(comment)
     db.session.commit()
-    return redirect(url_for('.derate',
+    return redirect(url_for('.moderate',
                             page=request.args.get('page', 1, type=int)))
 
 
