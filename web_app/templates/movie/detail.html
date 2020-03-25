@@ -5,16 +5,18 @@
 
 {% block page_content %}
 <div class="movie-display">
-    <img class="movie-poster col-lg-4" src="{{ movie_info.poster_link }}">
+    <img class="movie-poster col-lg-4" src="{{ movie_info['poster_link'] }}">
     <div class="movie-detail col-lg-6">
-        <h1>{{ movie_info.title }}</h1>
+        <h1>{{ movie_info['title'] }}</h1>
 {#        <p>{{ user.comments.count() }} 评论</p>#}
-        <h3>{{ movie_info.tagline }}</h3>
-        <p>{{ movie_info.keywords }}</p>
-        <p>{{ movie_info.overview }}</p>
-        <p>{{ movie_info.genres }}</p>
-        <p>{{ movie_info.release_date.date() }}</p>
-        <p>{{ movie_info.vote_average }}</p>
+        <h3>{{ movie_info['tagline'] }}</h3>
+        <p>评分：{{ movie_info['vote_average'] }}</p>
+        <p>评分人数：{{ movie_info['vote_count'] }}</p>
+        <p>流派：{{ " / ".join(movie_info['genres']) }}</p>
+        <p>简介：{{ movie_info['overview'] }}</p>
+        <p>关键词：{{ " / ".join(movie_info['keywords']) }}</p>
+        <p>上映日期：{{ movie_info['release_date'] }}</p>
+
     </div>
 </div>
 {#<h3>Posts by {{ user.username }}</h3>#}

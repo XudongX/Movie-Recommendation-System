@@ -1,4 +1,5 @@
 from flask import render_template, jsonify
+from ast import literal_eval
 
 from web_app.models.movie_model import Movie, Genre
 from web_app.movie import movie
@@ -36,8 +37,16 @@ def movie_list_by_genre(genre_id):
 def movie_detail(movie_id):
     q = Movie.query.filter_by(id=movie_id).first()
     movie_info = {}
-    # movie_info = db_model_serialize(q)
-    return render_template('movie/detail.html', movie_info=q)
+    movie_info['poster_link'] = q.poster_link
+    movie_info['title'] = q.title
+    movie_info['tagline'] = q.tagline
+    movie_info['keywords'] = [i['name'] for i in literal_eval(q.keywords)]
+    movie_info['overview'] = q.overview
+    movie_info['genres'] = [i.name for i in q.genres]
+    movie_info['release_date'] = q.release_date.date()
+    movie_info['vote_average'] = q.vote_average
+    movie_info['vote_count'] = q.vote_count
+    return render_template('movie/detail.html', movie_info=movie_info)
 
 
 @movie.route('api/genres')
