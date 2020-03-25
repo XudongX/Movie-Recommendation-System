@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block title %}{{ movie_info.title }}{% endblock %}
+
+{% block page_content %}
+<div class="movie-display">
+    <img class="movie-poster col-lg-4" src="{{ movie_info.poster_link }}">
+    <div class="movie-detail col-lg-6">
+        <h1>{{ movie_info.title }}</h1>
+{#        <p>{{ user.comments.count() }} 评论</p>#}
+        <h3>{{ movie_info.tagline }}</h3>
+        <p>{{ movie_info.keywords }}</p>
+        <p>{{ movie_info.overview }}</p>
+        <p>{{ movie_info.genres }}</p>
+        <p>{{ movie_info.release_date.date() }}</p>
+        <p>{{ movie_info.vote_average }}</p>
+    </div>
+</div>
+{#<h3>Posts by {{ user.username }}</h3>#}
+{#{% include '_posts.html' %}#}
+{#{% if pagination %}#}
+{#<div class="pagination">#}
+{#    {{ macros.pagination_widget(pagination, '.user', username=user.username) }}#}
+{#</div>#}
+{#{% endif %}#}
+{% endblock %}

@@ -11,12 +11,11 @@
 {% endblock %}
 
 {% block page_content %}
-    <ul class="nav nav-tabs">
-        <li{% if not show_followed %} class="active"{% endif %}><a href="">All</a></li>
-        <li{% if show_followed %} class="active"{% endif %}><a href="">Tab 2</a></li>
+    <ul class="nav nav-pills" id="genresapp">
+        <li v-for="item in genres"><a :id="'genre'+item.id" href="" v-on:click="changeGenre">{[ item.name ]}</a></li>
     </ul>
     <div class="movie-list" id='movieapp'>
-        <div class="movie-item" v-for="item in movieitems">
+        <div class="movie-item" v-for="item in movieItems">
             <img class="movie-poster"
                  :src="item.poster_link"
                  alt="movie poster">
@@ -24,40 +23,78 @@
                 <h3> {[ item.title ]} </h3>
                 <p> {[ item.tagline ]} </p>
                 <p>
-                    <a href="#" class="btn btn-primary" role="button">Like</a>
-                    <a href="#" class="btn btn-default" role="button">Detail</a>
+                    <a class="btn btn-primary" role="button">Like</a>
+                    <a :href="'detail/' + item.movie_id" class="btn btn-default" role="button">Detail</a>
                 </p>
             </div>
         </div>
     </div>
-    </div>
 
     <script>
-        var movieapp = new Vue({
-            el: '#movieapp',
+        var genresapp = new Vue({
+            el: '#genresapp',
             delimiters: ['{[', ']}'],
             data: {
-                movieitems: [
-                    {title: '学习 Vue'}
-                ]
+                genres: []
             },
-            created() { // 当 vm 实例 的 data 和 methods 初始化完毕后，vm实例会自动执行created 这个生命周期函数
-                this.getMovieList()
+            created() {
+                this.getGenresList()
             },
             methods: {
-                getMovieList() {
-                    this.$http.get('api/pop_movie_list').then(result => {
+                getGenresList() {
+                    this.$http.get('api/genres').then(result => {
                         // 注意： 通过 $http 获取到的数据，都在 result.body 中放着
-                        var result = result.body
-                        if (result.status === 'success') {
-                            this.movieitems = result.movieitems
+                        var r_body = result.body;
+                        if (r_body.status === 'success') {
+                            this.genres = r_body.data.genres
                         } else {
                             alert('获取数据失败！')
                         }
                     })
                 },
-                like(){},
-                detail(){}
+                changeGenre() {
+                    alert("asdffd")
+                }
+            }
+        })
+        var movieapp = new Vue({
+            el: '#movieapp',
+            delimiters: ['{[', ']}'],
+            data: {
+                movieItems: []
+            },
+            created() { // 当 vm 实例 的 data 和 methods 初始化完毕后，vm实例会自动执行created 这个生命周期函数
+                this.getMovieList()
+            },
+            methods: {
+                getMovieList(genre_id) {
+                    if (genre_id === undefined) {
+                       this.$http.get('api/movie_list').then(result => {
+                            // 注意： 通过 $http 获取到的数据，都在 result.body 中放着
+                            var r_body = result.body;
+                            if (r_body.status === 'success') {
+                                this.movieItems = r_body.data.movieItems
+                            } else {
+                                alert('获取数据失败！')
+                            }
+                        })
+                    } else {
+                        this.$http.get('api/movie_list/'+genre_id).then(result => {
+                            // 注意： 通过 $http 获取到的数据，都在 result.body 中放着
+                            var r_body = result.body;
+                            if (r_body.status === 'success') {
+                                this.movieItems = r_body.data.movieItems
+                            } else {
+                                alert('获取数据失败！')
+                            }
+                        })
+                    }
+
+                },
+                like() {
+                },
+                detail() {
+                }
             }
         })
     </script>
