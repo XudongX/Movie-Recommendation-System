@@ -110,6 +110,11 @@ def rate_movie():
     return api_success(None)
 
 
+@movie.route('api/user_recommend')
+def user_recommend():
+    pass
+
+
 @movie.route('api/related_recommend')
 def related_recommend():
     movie_id = request.values.get("movie_id")
@@ -121,3 +126,8 @@ def related_recommend():
                     'tagline': i.tagline, 'poster_link': i.poster_link}
                    for i in q]
     return api_success({'movieItems': movie_items})
+
+
+@movie.route('api/general_recommend')
+def general_recommend():
+    pass
