@@ -6,6 +6,12 @@
 
 }
 
+.movie-rate {
+    border-radius: 20px;
+    padding: 2px 0 1px 0;
+    width: fit-content;
+}
+
 .movie-detail-poster {
     border-radius: 20px;
     /*margin: 10px 10px;*/
