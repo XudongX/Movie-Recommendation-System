@@ -36,17 +36,16 @@ def movie_list():
 @movie.route('detail/<int:movie_id>', methods=['GET'])
 def movie_detail(movie_id):
     q = Movie.query.filter_by(id=movie_id).first()
-    movie_info = {}
-    movie_info['movie_id'] = q.id
-    movie_info['poster_link'] = q.poster_link
-    movie_info['title'] = q.title
-    movie_info['tagline'] = q.tagline if q.tagline is not None else ''
-    movie_info['keywords'] = [i['name'] for i in literal_eval(q.keywords)]
-    movie_info['overview'] = q.overview
-    movie_info['genres'] = [i.name for i in q.genres]
-    movie_info['release_date'] = q.release_date.date()
-    movie_info['vote_average'] = q.vote_average
-    movie_info['vote_count'] = q.vote_count
+    movie_info = {'movie_id': q.id,
+                  'poster_link': q.poster_link,
+                  'title': q.title,
+                  'tagline': q.tagline if q.tagline is not None else '',
+                  'keywords': [i['name'] for i in literal_eval(q.keywords)],
+                  'overview': q.overview,
+                  'genres': [i.name for i in q.genres],
+                  'release_date': q.release_date.date(),
+                  'vote_average': q.vote_average,
+                  'vote_count': q.vote_count}
     return render_template('movie/detail.html', movie_info=movie_info)
 
 

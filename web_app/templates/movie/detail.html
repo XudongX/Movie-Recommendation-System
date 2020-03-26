@@ -28,7 +28,6 @@
                 </div>
                 <button onclick=""> 我的评分: {[rated/10]}</button>
             {% endif %}
-
         </div>
     </div>
 
@@ -56,6 +55,11 @@
             delimiters: ['{[', ']}'],
             data: {
                 rated: 0
+            },
+            methods: {
+                postRating() {
+
+                }
             }
         });
         var movieApp = new Vue({
