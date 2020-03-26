@@ -24,9 +24,9 @@
             <p>关键词：{{ " / ".join(movie_info['keywords']) }}</p>
             {% if current_user.is_authenticated %}
                 <div class="col-lg-4">
-                    <input type="range" v-model="rated" id="movie_rating">
+                    <input type="range" v-model="score" id="movie_rating">
                 </div>
-                <button onclick=""> 我的评分: {[rated/10]}</button>
+                <button class="btn" @click="postRating()"> 我的评分: {[score/10]}</button>
             {% endif %}
         </div>
     </div>
@@ -54,11 +54,41 @@
             el: '#movieDetailApp',
             delimiters: ['{[', ']}'],
             data: {
-                rated: 0
+                rated: false,
+                score: 0
+            },
+            created() {
+                this.getRating()
             },
             methods: {
+                getRating() {
+                    this.$http.get('/movie/api/get_user_rate', {
+                        params: {movie_id:{{movie_info['movie_id']}}}
+                    }).then(result => {
+                        // 注意： 通过 $http 获取到的数据，都在 result.body 中放着
+                        var r_body = result.body;
+                        if (r_body.status === 'success') {
+                            this.score = r_body.data.score * 10;
+                            this.rated = true;
+                        } else {
+                            this.rated = false;
+                        }
+                    })
+                },
                 postRating() {
-
+                    this.$http.post(
+                        '/movie/api/rate',
+                        {movie_id:{{movie_info['movie_id']}}, score:this.score/10 },
+                        {emulateJSON: true}
+                    ).then(result => {
+                        // 注意： 通过 $http 获取到的数据，都在 result.body 中放着
+                        var r_body = result.body;
+                        if (r_body.status === 'success') {
+                            this.rated = true
+                        } else {
+                            alert('评分失败')
+                        }
+                    })
                 }
             }
         });

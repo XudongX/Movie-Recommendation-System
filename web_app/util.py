@@ -7,8 +7,11 @@ def db_model_serialize(model):
 
 
 def api_error(error_message):
-    return jsonify({'message': error_message, 'totalResults': 0, 'status': 'error'})
+    return jsonify({'message': error_message, 'status': 'error'})
 
 
-def api_success(data):
-    return jsonify({'data': data, 'totalResults': len(data), 'status': 'success'})
+def api_success(data, total_results=None, **kwargs):
+    if total_results is None:
+        return jsonify({'data': data, 'status': 'success'})
+    else:
+        return jsonify({'data': data, 'totalResults': total_results, 'status': 'success'})

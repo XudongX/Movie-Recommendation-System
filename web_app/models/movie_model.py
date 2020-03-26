@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from web_app import db
 
 
@@ -15,7 +17,8 @@ class Genre(db.Model):
     name = db.Column(db.String(255))
 
 
-movies_genres = db.Table('movies_genres',
+movies_genres = db.Table(
+    'movies_genres',
     db.Column('movie_id', db.Integer, db.ForeignKey('movies.id'), primary_key=True),
     db.Column('genre_id', db.Integer, db.ForeignKey('genres.id'), primary_key=True)
 )
@@ -55,6 +58,14 @@ movies_countries = db.Table(
 #     __tablename__ = 'user_rate_movies'
 
 
+class UserRatedMovie(db.Model):
+    __tablename__ = 'user_rated_movies'
+    movie_id = db.Column(db.Integer, db.ForeignKey('movies.id'), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    score = db.Column(db.Float, default=5.0)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+
 class MoviePoster(db.Model):
     __tablename__ = 'movie_posters'
     movie_id = db.Column(db.Integer, db.ForeignKey('movies.id'), primary_key=True)
@@ -67,6 +78,8 @@ class Movie(db.Model):
     budget = db.Column(db.String(255))
     genres = db.relationship('Genre', secondary=movies_genres, lazy='dynamic',
                              backref=db.backref('movies', lazy='dynamic'))
+    rated_users = db.relationship('User', secondary='user_rated_movies', lazy='dynamic',
+                                  backref=db.backref('rated_movies'))
     homepage = db.Column(db.String(255))
     keywords = db.Column(db.Text)
     original_language = db.Column(db.String(255))

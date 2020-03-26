@@ -1,6 +1,6 @@
 from web_app import create_app, db
 from web_app.models.user_model import User, Role, Post
-from web_app.models.movie_model import Movie, Genre, Company, Country
+from web_app.models.movie_model import Movie, Genre, Company, Country, UserRatedMovie
 from flask_script import Manager, Shell
 from flask_migrate import MigrateCommand, Migrate
 
@@ -11,7 +11,7 @@ migrate = Migrate(app, db)
 
 def make_shell_context():
     return dict(app=app, db=db, User=User, Role=Role, Post=Post,
-                Movie=Movie, Genre=Genre, Company=Company, Country=Country
+                Movie=Movie, Genre=Genre, Company=Company, Country=Country, UserRatedMovie=UserRatedMovie
                 )
 
 
