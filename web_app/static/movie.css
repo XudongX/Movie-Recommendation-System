@@ -3,20 +3,35 @@
 }
 
 .movie-list {
-
+    -moz-column-count: 4; /* Firefox */
+    -webkit-column-count: 4; /* Safari 和 Chrome */
+    column-count: 4;
+    -moz-column-gap: 2em;
+    -webkit-column-gap: 2em;
+    column-gap: 2em;
+    width: 100%;
+    margin: 2em auto;
 }
 
-.movie-rate {
-    border-radius: 20px;
-    padding: 2px 0 1px 0;
-    width: fit-content;
+@media screen and (max-width: 1200px) {
+    .movie-list {
+        column-count: 3;
+    / / two columns on larger phones
+    }
 }
 
-.movie-detail-poster {
-    border-radius: 20px;
-    /*margin: 10px 10px;*/
-    box-shadow: 2px 2px 2px #b9bbbe;
-    border: solid darkgrey 1px;
+@media screen and (max-width: 800px) {
+    .movie-list {
+        column-count: 2;
+    / / two columns on larger phones
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .movie-list {
+        column-count: 1;
+    / / two columns on larger phones
+    }
 }
 
 .movie-item {
@@ -31,12 +46,24 @@
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 
+    -moz-page-break-inside: avoid;
+    -webkit-column-break-inside: avoid;
+    break-inside: avoid;
 }
 
-/*.movie-item:hover {*/
-/*    box-shadow: 3px 3px 3px cornflowerblue;*/
-/*}*/
-
 .movie-poster {
-    width: 200px;
+    width: 230px;
+}
+
+.movie-detail-poster {
+    border-radius: 20px;
+    /*margin: 10px 10px;*/
+    box-shadow: 2px 2px 2px #b9bbbe;
+    border: solid darkgrey 1px;
+}
+
+.movie-rate {
+    border-radius: 20px;
+    padding: 2px 0 1px 0;
+    width: fit-content;
 }
