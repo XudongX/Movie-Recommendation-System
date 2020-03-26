@@ -144,3 +144,14 @@ def followed_by(username):
     return render_template('user/followers.html', user=user, title="Followed by",
                            endpoint='.followed_by', pagination=pagination,
                            follows=follows)
+
+
+@user.route('/rated_movies/<username>')
+def rated_movies(username):
+    user = User.query.filter_by(username=username).first()
+    if user is None:
+        flash('无效的用户')
+        return redirect(url_for('.username_router', username=username))
+    rated_movies = user.rated_movies
+    print(rated_movies)
+    return render_template('user/rated_movies.html', rated_movies=rated_movies, user=user)

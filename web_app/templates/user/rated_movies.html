@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros %}
+
+{% block title %}Rated Movies By {{ user.username }}{% endblock %}
+
+{% block page_content %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='movie.css') }}">
+    <div class="page-header">
+        <h1>Rated Movies By {{ user.username }}</h1>
+    </div>
+
+    <div class="movie-list" id='movieApp'>
+        {% for item in rated_movies %}
+            <div class="movie-item">
+                <img class="movie-poster" src="{{ item.poster_link }}" alt="movie poster">
+                <div class="caption">
+                    <h3> {{ item.title }} </h3>
+                    <p> {{ item.tagline }} </p>
+                    <p>
+                        <a class="btn btn-primary" role="button">Star</a>
+                        <a href="/movie/detail/{{ item.id }}" class="btn btn-default" role="button">Detail</a>
+                    </p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}
