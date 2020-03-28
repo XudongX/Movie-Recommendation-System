@@ -5,6 +5,7 @@
 init_env.sh
 data-dev.sqlite
 .migrations
+.venv_b
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
