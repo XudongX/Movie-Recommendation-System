@@ -1,7 +1,6 @@
 from sqlalchemy import create_engine
 import pandas as pd
 import numpy as np
-
 from recommendation_system.model import DemographicFiltering, ContentBasedFiltering
 
 
@@ -43,9 +42,15 @@ def data_importing(db_str='mysql://localhost:3306/graduation_project?user=root&p
     return df2, rating_df, user_df
 
 
-movie_df, rating_df, user_df = data_importing()
-# f1 = DemographicFiltering(movie_df)
-# print(type(f1.calculate()[0]))
-#
-f2 = ContentBasedFiltering(movie_df, results_num=200)
-print(f2.calculate(49026))
+def main():
+    movie_df, rating_df, user_df = data_importing()
+    f1 = DemographicFiltering(movie_df)
+    print(f1.calculate()[0])
+
+    f2 = ContentBasedFiltering(movie_df, results_num=200)
+    f2.calculate()
+    print(f2.get_results(49026))
+
+
+if __name__ == '__main__':
+    main()
