@@ -4,9 +4,8 @@
 .DS_Store
 init_env.sh
 data-dev.sqlite
-.migrations
-.venv_b
 /migrations/
+/venv_b/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -109,3 +108,4 @@ ENV/
 
 # mypy
 .mypy_cache/
+
