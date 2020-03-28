@@ -169,5 +169,5 @@ class CollaborativeFiltering:
     def calculate(self):
         pass
 
-    def get_results(self, user_id):
+    def get_results(self, user_id, threshold):
         pass

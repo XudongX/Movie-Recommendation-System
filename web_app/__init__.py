@@ -1,3 +1,4 @@
+import redis
 from flask import Flask
 from flask_bootstrap import Bootstrap
 from flask_mail import Mail
@@ -7,12 +8,12 @@ from flask_login import LoginManager
 from flask_pagedown import PageDown
 from config import config
 
-
 bootstrap = Bootstrap()
 mail = Mail()
 moment = Moment()
 db = SQLAlchemy()
 pagedown = PageDown()
+redis_pool = redis.ConnectionPool(host='0.0.0.0', port=6379)
 
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'
@@ -44,6 +45,5 @@ def create_app(config_name):
 
     from .movie import movie as movie_blueprint
     app.register_blueprint(movie_blueprint, url_prefix='/movie')
-
 
     return app

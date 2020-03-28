@@ -1,6 +1,8 @@
+import redis
 from sqlalchemy import create_engine
 import pandas as pd
 import numpy as np
+
 from recommender_system.model import DemographicFiltering, ContentBasedFiltering, CollaborativeFiltering
 
 
@@ -45,17 +47,32 @@ def data_importing(db_str='mysql://localhost:3306/graduation_project?user=root&p
 def main():
     movie_df, rating_df, user_df = data_importing()
 
-    f1 = DemographicFiltering(movie_df)
+    pool = redis.ConnectionPool(host='0.0.0.0', port=6379)
+    redis_conn = redis.Redis(connection_pool=pool)
+
+    f1 = DemographicFiltering(movie_df, quantile_num=0.8)
     f1.calculate()
-    print(f1.get_results())
+    f1_results = f1.get_results()
+    redis_conn.set('rank_a', str(list(f1_results[0])))
+    # rank_b 暂不需要
+    # redis_conn.set('rank_b', str(list(f1_results[1])))
 
-    f2 = ContentBasedFiltering(movie_df, results_num=200)
+    f2 = ContentBasedFiltering(movie_df, results_num=100)
     f2.calculate()
-    print(f2.get_results(49026))
 
-    f3 = CollaborativeFiltering()
-    f3.calculate()
-    f3.get_results()
+    for movie_id in movie_df['id']:
+        f2_results = f2.get_results(movie_id)
+        key1 = 'm'+str(movie_id)+'_a'
+        key2 = 'm' + str(movie_id) + '_b'
+        redis_conn.set(key1, str(list(f2_results[0])))
+        redis_conn.set(key2, str(list(f2_results[1])))
+
+    redis_conn.close()
+
+
+    # f3 = CollaborativeFiltering()
+    # f3.calculate()
+    # f3.get_results()
 
 
 if __name__ == '__main__':

@@ -7,7 +7,7 @@ from flask_login import current_user
 from web_app import db
 from web_app.models.movie_model import Movie, Genre, UserRatedMovie
 from web_app.movie import movie
-from web_app.util import db_model_serialize, api_error, api_success
+from web_app.util import db_model_serialize, api_error, api_success, get_recomm_by_movie_id
 
 
 @movie.route('/', methods=['GET'])
@@ -121,7 +121,10 @@ def related_recommend():
     if movie_id is None:
         return api_error('missing args: movie_id')
 
-    q = Movie.query.order_by(Movie.vote_average.desc())[:5]
+    r1, r2 = get_recomm_by_movie_id(movie_id)
+
+    q = Movie.query.filter(Movie.id.in_(r2[:10]))
+
     movie_items = [{'movie_id': i.id, 'title': i.title,
                     'tagline': i.tagline, 'poster_link': i.poster_link}
                    for i in q]
