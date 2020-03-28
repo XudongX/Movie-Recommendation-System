@@ -22,13 +22,13 @@ def movie_list():
     # if page_num is None:
     #     return api_error('missing args: page_num')
     if genre_id is None or genre_id is '':
-        q_movies = Movie.query.order_by(Movie.vote_average.desc())[:30]
+        q_movies = Movie.query.order_by(Movie.release_date.desc())[:30]
     else:
         q = Genre.query.filter_by(id=genre_id)
         if q.count() == 0:
             return api_error('genre_id error')
         q = q.first()
-        q_movies = q.movies.order_by(Movie.vote_average.desc())[:30]
+        q_movies = q.movies.order_by(Movie.release_date.desc())[:30]
 
     movie_items = [{'movie_id': i.id, 'title': i.title,
                     'tagline': i.tagline, 'poster_link': i.poster_link}
@@ -121,9 +121,8 @@ def related_recommend():
     if movie_id is None:
         return api_error('missing args: movie_id')
 
-    r1, r2 = get_recomm_by_movie_id(movie_id)
-
-    q = Movie.query.filter(Movie.id.in_(r2[:10]))
+    recomm = get_recomm_by_movie_id(movie_id)
+    q = Movie.query.filter(Movie.id.in_(recomm))
 
     movie_items = [{'movie_id': i.id, 'title': i.title,
                     'tagline': i.tagline, 'poster_link': i.poster_link}

@@ -57,7 +57,7 @@ def main():
     # rank_b 暂不需要
     # redis_conn.set('rank_b', str(list(f1_results[1])))
 
-    f2 = ContentBasedFiltering(movie_df, results_num=100)
+    f2 = ContentBasedFiltering(movie_df, results_num=60)
     f2.calculate()
 
     for movie_id in movie_df['id']:
