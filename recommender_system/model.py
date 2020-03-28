@@ -163,5 +163,11 @@ class ContentBasedFiltering:
 
 
 class CollaborativeFiltering:
-    def __init__(self):
+    def __init__(self, rating_df, user_df):
+        pass
+
+    def calculate(self):
+        pass
+
+    def get_results(self, user_id):
         pass
