@@ -1,4 +1,5 @@
 import redis
+from scipy.sparse import csr_matrix
 from sqlalchemy import create_engine
 import pandas as pd
 import numpy as np
@@ -67,12 +68,17 @@ def main():
         redis_conn.set(key1, str(list(f2_results[0])))
         redis_conn.set(key2, str(list(f2_results[1])))
 
-    redis_conn.close()
 
-
+    len(user_df)
     # f3 = CollaborativeFiltering()
     # f3.calculate()
     # f3.get_results()
+    pd.Series()
+
+    redis_conn.close()
+
+
+
 
 
 if __name__ == '__main__':

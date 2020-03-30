@@ -163,11 +163,23 @@ class ContentBasedFiltering:
 
 
 class CollaborativeFiltering:
-    def __init__(self, rating_df, user_df):
+    def __init__(self, rating_df, user_df, df, movie_sim_matrix=None):
+        self._df = df
+        self._rating_df = rating_df
+        self._movie_sim = movie_sim_matrix
+        self._theta_m_u = np.zeros([df.shape[0], user_df.shape[0]], dtype=np.float32)
+        self._movie_indices = pd.Series(df.index, index=df['id'])
+        self._user_indices = pd.Series(user_df.index, index=user_df['id'])  # 构造反向映射
+
+    def _get_sim_user(self, user_id, top_n=10):
+        pass
+
+    def _get_sim_movie(self, movie_id, top_n=10):
         pass
 
     def calculate(self):
-        pass
+        for item in self._rating_df.to_numpy():
+            self._theta_m_u[self._movie_indices[int(item[0])], self._user_indices[int(item[1])]] = item[2]
 
     def get_results(self, user_id, threshold):
         pass
