@@ -63,11 +63,10 @@ def main():
 
     for movie_id in movie_df['id']:
         f2_results = f2.get_results(movie_id)
-        key1 = 'm'+str(movie_id)+'_a'
+        key1 = 'm' + str(movie_id) + '_a'
         key2 = 'm' + str(movie_id) + '_b'
         redis_conn.set(key1, str(list(f2_results[0])))
         redis_conn.set(key2, str(list(f2_results[1])))
-
 
     len(user_df)
     # f3 = CollaborativeFiltering()
@@ -76,9 +75,6 @@ def main():
     pd.Series()
 
     redis_conn.close()
-
-
-
 
 
 if __name__ == '__main__':

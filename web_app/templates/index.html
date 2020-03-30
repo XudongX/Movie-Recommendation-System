@@ -5,11 +5,112 @@
 {% block title %}Main Page{% endblock %}
 
 {% block page_content %}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='movie.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.staticfile.org/vue-resource/1.5.1/vue-resource.min.js"></script>
+    {% if current_user.is_authenticated %}
+        <div class="page-header">
+            <h1> Recommend for {{ current_user.username }}</h1>
+        </div>
+
+        <div class="movie-list" id='movieApp'>
+            <div class="movie-item" v-for="item in movieItems">
+                <img class="movie-poster"
+                     :src="item.poster_link"
+                     alt="movie poster">
+                <div class="caption">
+                    <h3> {[ item.title ]} </h3>
+                    <p> {[ item.tagline ]} </p>
+                    <p>
+                        <a class="btn btn-primary" role="button">Like</a>
+                        <a :href="'/movie/detail/' + item.movie_id" class="btn btn-default" role="button">Detail</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    {% endif %}
 
 
+    <div class="page-header">
+        <h1> Top Movies </h1>
+    </div>
+    <div class="movie-list" id='topMovieApp'>
+        <div class="movie-item" v-for="item in movieItems">
+            <img class="movie-poster"
+                 :src="item.poster_link"
+                 alt="movie poster">
+            <div class="caption">
+                <h3> {[ item.title ]} </h3>
+                <p> {[ item.tagline ]} </p>
+                <p>
+                    <a class="btn btn-primary" role="button">Like</a>
+                    <a :href="'/movie/detail/' + item.movie_id" class="btn btn-default" role="button">Detail</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        var movieApp = new Vue({
+            el: '#movieApp',
+            delimiters: ['{[', ']}'],
+            data: {
+                movieItems: []
+            },
+            created() { // 当 vm 实例 的 data 和 methods 初始化完毕后，vm实例会自动执行created 这个生命周期函数
+                this.getMovieList()
+            },
+            methods: {
+                getMovieList() {
+                    this.$http.get('/movie/api/user_recommend').then(result => {
+                        // 注意： 通过 $http 获取到的数据，都在 result.body 中放着
+                        var r_body = result.body;
+                        if (r_body.status === 'success') {
+                            this.movieItems = r_body.data.movieItems
+                        } else {
+                            alert('获取数据失败！')
+                        }
+                    })
+                },
+                like() {
+                },
+                detail() {
+                }
+            }
+        });
+        var topMovieApp = new Vue({
+            el: '#topMovieApp',
+            delimiters: ['{[', ']}'],
+            data: {
+                movieItems: []
+            },
+            created() { // 当 vm 实例 的 data 和 methods 初始化完毕后，vm实例会自动执行created 这个生命周期函数
+                this.getMovieList()
+            },
+            methods: {
+                getMovieList() {
+                    this.$http.get('/movie/api/rank').then(result => {
+                        // 注意： 通过 $http 获取到的数据，都在 result.body 中放着
+                        var r_body = result.body;
+                        if (r_body.status === 'success') {
+                            this.movieItems = r_body.data.movieItems
+                        } else {
+                            alert('获取数据失败！')
+                        }
+                    })
+                }
+            },
+            like() {
+            },
+            detail() {
+            }
+        })
+    </script>
 
 {% endblock %}
 
 {% block scripts %}
-{{ super() }}
+    {{ super() }}
 {% endblock %}

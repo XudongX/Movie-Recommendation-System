@@ -1,13 +1,14 @@
+import redis
 import sqlalchemy
 from flask import render_template, jsonify, request, redirect
 from ast import literal_eval
 
 from flask_login import current_user
 
-from web_app import db
+from web_app import db, redis_pool
 from web_app.models.movie_model import Movie, Genre, UserRatedMovie
 from web_app.movie import movie
-from web_app.util import db_model_serialize, api_error, api_success, get_recomm_by_movie_id
+from web_app.util import db_model_serialize, api_error, api_success, get_recomm_by_movie_id, get_rank
 
 
 @movie.route('/', methods=['GET'])
@@ -112,7 +113,7 @@ def rate_movie():
 
 @movie.route('api/user_recommend')
 def user_recommend():
-    pass
+    return api_error('pass')
 
 
 @movie.route('api/related_recommend')
@@ -130,6 +131,14 @@ def related_recommend():
     return api_success({'movieItems': movie_items})
 
 
-@movie.route('api/general_recommend')
+@movie.route('api/rank')
 def general_recommend():
-    pass
+    rank = get_rank()[:20]
+    q = list()
+    for m_id in rank:
+        q.append(Movie.query.filter_by(id=m_id).first())
+
+    movie_items = [{'movie_id': i.id, 'title': i.title,
+                    'tagline': i.tagline, 'poster_link': i.poster_link}
+                   for i in q]
+    return api_success({'movieItems': movie_items})

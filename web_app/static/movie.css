@@ -42,6 +42,7 @@
     box-shadow: 2px 2px 2px #b9bbbe;
     display: inline-block;
     border: solid darkgrey 1px;
+
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
