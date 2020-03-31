@@ -56,5 +56,19 @@ def get_recomm_by_movie_id(movie_id):
     return list(final)
 
 
-def get_recomm_by_user(user_id):
-    pass
+def get_recomm_by_user(user_id, threshold=7.0):
+    key_u = 'u' + str(user_id) + '_recomm'
+    redis_conn = redis.Redis(connection_pool=redis_pool)
+    try:
+        redis_value = literal_eval(redis_conn.get(key_u).decode('utf-8'))
+        redis_conn.close()
+    except AttributeError:
+        # log
+        redis_conn.close()
+        return []
+
+    result = []
+    for item in redis_value:
+        if item[1] >= threshold:
+            result.append(item[0])
+    return result

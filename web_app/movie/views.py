@@ -113,6 +113,7 @@ def rate_movie():
 
 @movie.route('api/user_recommend')
 def user_recommend():
+    # 根据user的rated movies 选择相关推荐，根据cf推荐，根据user关注的用户的高rating推荐。
     return api_error('pass')
 
 
