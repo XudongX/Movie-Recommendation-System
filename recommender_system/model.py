@@ -5,6 +5,7 @@ from sklearn.metrics.pairwise import linear_kernel
 from ast import literal_eval
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
+from surprise import Reader, Dataset, SVD
 
 
 class DemographicFiltering:
@@ -163,13 +164,15 @@ class ContentBasedFiltering:
 
 
 class CollaborativeFiltering:
-    def __init__(self, rating_df, user_df, df, movie_sim_matrix=None):
-        self._df = df
+    def __init__(self, rating_df, user_df, movie_df, movie_sim_matrix=None):
+        self._df = movie_df
         self._rating_df = rating_df
         self._movie_sim = movie_sim_matrix
-        self._theta_m_u = np.zeros([df.shape[0], user_df.shape[0]], dtype=np.float32)
-        self._movie_indices = pd.Series(df.index, index=df['id'])
+        self._theta_m_u = np.zeros([movie_df.shape[0], user_df.shape[0]], dtype=np.float32)
+        # self._x_m_n = np.zeros([df.shape[0], feature_n], dtype=np.float32)
+        self._movie_indices = pd.Series(movie_df.index, index=movie_df['id'])
         self._user_indices = pd.Series(user_df.index, index=user_df['id'])  # 构造反向映射
+        self._algo = SVD()
 
     def _get_sim_user(self, user_id, top_n=10):
         pass
@@ -178,8 +181,15 @@ class CollaborativeFiltering:
         pass
 
     def calculate(self):
-        for item in self._rating_df.to_numpy():
-            self._theta_m_u[self._movie_indices[int(item[0])], self._user_indices[int(item[1])]] = item[2]
+        # for item in self._rating_df.to_numpy():
+        #     self._theta_m_u[self._movie_indices[int(item[0])], self._user_indices[int(item[1])]] = item[2]
 
-    def get_results(self, user_id, threshold):
-        pass
+        # cosine_similarity(self._theta_m_u.T, self._theta_m_u.T)
+        # cosine_similarity(self._theta_m_u, self._theta_m_u)
+        reader = Reader()
+        data = Dataset.load_from_df(self._theta_m_u[['user_id', 'movie_id', 'score']], reader)
+        trainset = data.build_full_trainset()
+        self._algo.fit(trainset)
+
+    def get_results(self, user_id, movie_id):
+        return self._algo.predict(user_id, movie_id).est

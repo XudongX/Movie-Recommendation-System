@@ -54,3 +54,7 @@ def get_recomm_by_movie_id(movie_id):
     final = set(selection2)
     final.update(set(selection1))
     return list(final)
+
+
+def get_recomm_by_user(user_id):
+    pass

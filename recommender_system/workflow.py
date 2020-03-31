@@ -47,7 +47,6 @@ def data_importing(db_str='mysql://localhost:3306/graduation_project?user=root&p
 
 def main():
     movie_df, rating_df, user_df = data_importing()
-
     pool = redis.ConnectionPool(host='0.0.0.0', port=6379)
     redis_conn = redis.Redis(connection_pool=pool)
 
@@ -60,7 +59,6 @@ def main():
 
     f2 = ContentBasedFiltering(movie_df, results_num=60)
     f2.calculate()
-
     for movie_id in movie_df['id']:
         f2_results = f2.get_results(movie_id)
         key1 = 'm' + str(movie_id) + '_a'
@@ -68,11 +66,15 @@ def main():
         redis_conn.set(key1, str(list(f2_results[0])))
         redis_conn.set(key2, str(list(f2_results[1])))
 
-    len(user_df)
-    # f3 = CollaborativeFiltering()
-    # f3.calculate()
-    # f3.get_results()
-    pd.Series()
+    f3 = CollaborativeFiltering(rating_df, user_df, movie_df)
+    f3.calculate()
+    for user_id in user_df['id']:
+        user_mov_list = list()
+        for movie_id in movie_df['id']:
+            user_mov_list.append((movie_id, f3.get_results(user_id, movie_id)))
+        user_mov_list.sort(key=lambda x: x[1], reverse=True)
+        key_u = 'u' + str(user_id) + '_recomm'
+        redis_conn.set(key_u, str(user_mov_list[:20]))
 
     redis_conn.close()
 
