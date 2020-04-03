@@ -187,7 +187,7 @@ class CollaborativeFiltering:
         # cosine_similarity(self._theta_m_u.T, self._theta_m_u.T)
         # cosine_similarity(self._theta_m_u, self._theta_m_u)
         reader = Reader()
-        data = Dataset.load_from_df(self._theta_m_u[['user_id', 'movie_id', 'score']], reader)
+        data = Dataset.load_from_df(self._rating_df[['user_id', 'movie_id', 'score']], reader)
         trainset = data.build_full_trainset()
         self._algo.fit(trainset)
 

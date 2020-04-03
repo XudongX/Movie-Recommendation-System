@@ -22,6 +22,9 @@ class Config:
     COMMENTS_PER_PAGE = 30
     SLOW_DB_QUERY_TIME = 0.5
 
+    REDIS_DB_URI = os.environ.get('REDIS_DB_URI') or \
+        'redis://@localhost:6379/0'
+
     @staticmethod
     def init_app(app):
         pass

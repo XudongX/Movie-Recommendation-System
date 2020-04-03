@@ -72,3 +72,33 @@ def get_recomm_by_user(user_id, threshold=7.0):
         if item[1] >= threshold:
             result.append(item[0])
     return result
+
+
+class MessageQueue:
+    def __init__(self, db_pool=None):
+        if db_pool is None:
+            self.redis_pool = redis_pool
+
+    def __enter__(self):
+        self._connection = redis.Redis(connection_pool=self.redis_pool)
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self._connection.close()
+
+    def __del__(self):
+        self._connection.close()
+
+    def send(self, msg):
+        self._connection.rpush('MQ', msg)
+        pass
+
+    def get(self, timeout=None):
+        result = self._connection.lpop('MQ')
+        pass
+
+    def refresh_db_signal(self):
+        pass
+
+    def wait_refresh_signal(self):
+        pass
