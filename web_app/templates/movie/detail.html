@@ -23,12 +23,12 @@
             <p>简介：{{ movie_info['overview'] }}</p>
             <p>关键词：{{ " / ".join(movie_info['keywords']) }}</p>
             {% if current_user.is_authenticated %}
-                <div class="movie-rate">
+{#                <div class="movie-rate">#}
                     <div class="col-lg-4">
                         <input type="range" v-model="score" id="movie_rating" @blur="postRating()">
                     </div>
                     <div class="text-primary"> 我的评分: {[score/10]}</div>
-                </div>
+{#                </div>#}
 
             {% endif %}
         </div>

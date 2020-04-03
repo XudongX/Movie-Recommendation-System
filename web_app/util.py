@@ -90,11 +90,11 @@ class MessageQueue:
         self._connection.close()
 
     def send(self, msg):
-        self._connection.rpush('MQ', msg)
+        self._connection.lpush('MQ', msg)
         pass
 
     def get(self, timeout=None):
-        result = self._connection.lpop('MQ')
+        result = self._connection.brpop('MQ', timeout)
         pass
 
     def refresh_db_signal(self):
