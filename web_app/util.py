@@ -1,3 +1,5 @@
+import json
+import time
 from ast import literal_eval
 from collections import defaultdict
 
@@ -78,6 +80,9 @@ class MessageQueue:
     def __init__(self, db_pool=None):
         if db_pool is None:
             self.redis_pool = redis_pool
+        else:
+            self.redis_pool = db_pool
+        self._connection = redis.Redis(connection_pool=self.redis_pool)
 
     def __enter__(self):
         self._connection = redis.Redis(connection_pool=self.redis_pool)
@@ -90,15 +95,26 @@ class MessageQueue:
         self._connection.close()
 
     def send(self, msg):
-        self._connection.lpush('MQ', msg)
-        pass
+        return self._connection.lpush('MQ', msg)
 
     def get(self, timeout=None):
-        result = self._connection.brpop('MQ', timeout)
-        pass
+        if timeout is None:
+            result = self._connection.rpop('MQ')
+        elif isinstance(timeout, int):
+            result = self._connection.brpop('MQ', timeout=timeout)
+        else:
+            result = ''
+        return json.dumps(result.decode('utf-8'))
 
-    def refresh_db_signal(self):
-        pass
+    def send_refresh_recomm_signal(self):
+        return self._connection.lpush('MQ', 'refresh_recomm_signal')
 
-    def wait_refresh_signal(self):
-        pass
+    def wait_refresh_signal(self, timeout=0):
+        while True:
+            result = self._connection.brpop('MQ', timeout=timeout).decode('utf-8')
+            if result is 'refresh_recomm_signal':
+                return True
+            else:
+                self._connection.lpush('MQ', result)
+                time.sleep(1)
+

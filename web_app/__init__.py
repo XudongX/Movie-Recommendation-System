@@ -13,7 +13,7 @@ mail = Mail()
 moment = Moment()
 db = SQLAlchemy()
 pagedown = PageDown()
-redis_pool = redis.ConnectionPool(Config.REDIS_DB_URI)
+redis_pool = redis.ConnectionPool(host='0.0.0.0', port=6379)
 
 login_manager = LoginManager()
 login_manager.login_view = 'auth.login'

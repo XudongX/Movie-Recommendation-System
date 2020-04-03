@@ -26,5 +26,10 @@ def test():
     unittest.TextTestRunner(verbosity=2).run(tests)
 
 
+def recomm_system():
+    pass
+
+
 if __name__ == '__main__':
+    recomm_system()
     manager.run()
