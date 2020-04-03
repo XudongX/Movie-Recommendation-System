@@ -8,7 +8,8 @@ from flask_login import current_user
 from web_app import db, redis_pool
 from web_app.models.movie_model import Movie, Genre, UserRatedMovie
 from web_app.movie import movie
-from web_app.util import db_model_serialize, api_error, api_success, get_recomm_by_movie_id, get_rank
+from web_app.util import db_model_serialize, api_error, api_success, get_recomm_by_movie_id, get_rank, \
+    get_recomm_by_user
 
 
 @movie.route('/', methods=['GET'])
@@ -114,6 +115,7 @@ def rate_movie():
 @movie.route('api/user_recommend')
 def user_recommend():
     # 根据user的rated movies 选择相关推荐，根据cf推荐，根据user关注的用户的高rating推荐。
+    get_recomm_by_user(threshold=5.0)
     return api_error('pass')
 
 

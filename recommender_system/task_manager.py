@@ -1,7 +1,6 @@
 import multiprocessing
 import threading
 import time
-from queue import Queue, Full
 
 from recommender_system.workflow import main
 from web_app.util import MessageQueue
@@ -30,6 +29,7 @@ def monitor_signal(timer):
             mq.wait_refresh_signal()  # block wait
             timer.wait()
             p = multiprocessing.Process(target=main)
+            p.start()
             p.join()
 
 
@@ -37,6 +37,7 @@ def task_timer(timer):
     while True:
         timer.wait()
         p = multiprocessing.Process(target=main)
+        p.start()
         p.join()
 
 

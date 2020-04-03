@@ -1,3 +1,4 @@
+from recommender_system import task_manager
 from web_app import create_app, db
 from web_app.models.user_model import User, Role, Post
 from web_app.models.movie_model import Movie, Genre, Company, Country, UserRatedMovie
@@ -26,10 +27,6 @@ def test():
     unittest.TextTestRunner(verbosity=2).run(tests)
 
 
-def recomm_system():
-    pass
-
-
 if __name__ == '__main__':
-    recomm_system()
+    task_manager.run()
     manager.run()
