@@ -77,15 +77,13 @@ def get_recomm_by_user(user_id, threshold=7.0):
 
 
 class MessageQueue:
-    def __init__(self, db_pool=None):
-        if db_pool is None:
-            self.redis_pool = redis_pool
+    def __init__(self, redis_conn=None):
+        if redis_conn is None:
+            self._connection = redis.Redis(host='0.0.0.0', port=6379)
         else:
-            self.redis_pool = db_pool
-        self._connection = redis.Redis(connection_pool=self.redis_pool)
+            self._connection = redis_conn
 
     def __enter__(self):
-        self._connection = redis.Redis(connection_pool=self.redis_pool)
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -105,6 +103,9 @@ class MessageQueue:
         else:
             result = ''
         return json.dumps(result.decode('utf-8'))
+
+    def clear(self):
+        self._connection.flushdb()
 
     def send_refresh_recomm_signal(self):
         return self._connection.lpush('MQ', 'refresh_recomm_signal')
