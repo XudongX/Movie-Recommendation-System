@@ -1,6 +1,9 @@
 .nav-pills a {
     cursor: pointer;
 }
+.btn-info {
+    cursor: pointer;
+}
 
 .movie-list {
     -moz-column-count: 4; /* Firefox */

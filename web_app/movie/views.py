@@ -1,3 +1,6 @@
+import random
+from datetime import datetime
+
 import redis
 import sqlalchemy
 from flask import render_template, jsonify, request, redirect
@@ -6,10 +9,12 @@ from ast import literal_eval
 from flask_login import current_user
 
 from web_app import db, redis_pool
+from web_app.decorators import admin_required
 from web_app.models.movie_model import Movie, Genre, UserRatedMovie
+from web_app.models.user_model import Permission
 from web_app.movie import movie
 from web_app.util import db_model_serialize, api_error, api_success, get_recomm_by_movie_id, get_rank, \
-    get_recomm_by_user
+    get_recomm_by_user, MessageQueue
 
 
 @movie.route('/', methods=['GET'])
@@ -114,9 +119,25 @@ def rate_movie():
 
 @movie.route('api/user_recommend')
 def user_recommend():
+    if current_user.is_authenticated is False:
+        return api_error('user not login!')
     # 根据user的rated movies 选择相关推荐，根据cf推荐，根据user关注的用户的高rating推荐。
-    get_recomm_by_user(threshold=5.0)
-    return api_error('pass')
+    random.seed(datetime.now().timestamp())
+
+    movie_id_list = get_recomm_by_user(current_user.id, threshold=5.0)[:5]
+    temp_list = random.sample(current_user.rated_movies, 3)
+    for item in temp_list:
+        movie_id_list.extend(random.sample(get_recomm_by_movie_id(item.id), 2))
+    # current_user.followed
+    print(movie_id_list)
+    movie_id_list = list(set(movie_id_list))
+    movie_id_list = random.sample(movie_id_list, 8)
+    q = Movie.query.filter(Movie.id.in_(movie_id_list))
+
+    movie_items = [{'movie_id': i.id, 'title': i.title,
+                    'tagline': i.tagline, 'poster_link': i.poster_link}
+                   for i in q]
+    return api_success({'movieItems': movie_items})
 
 
 @movie.route('api/related_recommend')
@@ -125,7 +146,7 @@ def related_recommend():
     if movie_id is None:
         return api_error('missing args: movie_id')
 
-    recomm = get_recomm_by_movie_id(movie_id)
+    recomm = get_recomm_by_movie_id(movie_id)[:12]
     q = Movie.query.filter(Movie.id.in_(recomm))
 
     movie_items = [{'movie_id': i.id, 'title': i.title,
@@ -145,3 +166,12 @@ def general_recommend():
                     'tagline': i.tagline, 'poster_link': i.poster_link}
                    for i in q]
     return api_success({'movieItems': movie_items})
+
+
+@movie.route('api/refresh_recomm')
+def refresh_recomm():
+    if not current_user.can(Permission.ADMIN):
+        return api_error('Permission denial')
+    with MessageQueue() as mq:
+        mq.send_refresh_recomm_signal()
+    return api_success('Refreshing in seconds')

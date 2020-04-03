@@ -27,7 +27,7 @@
                     <div class="col-lg-4">
                         <input type="range" v-model="score" id="movie_rating" @blur="postRating()">
                     </div>
-                    <div class="text-primary"> 我的评分: {[score/10]}</div>
+                    <a class="btn-sm btn-info" @click="postRating()"> 我的评分: {[score/10]}</a>
 {#                </div>#}
 
             {% endif %}
